@@ -1,15 +1,15 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 
-uses(RefreshDatabase::class);
+uses(LazilyRefreshDatabase::class);
 
 test('user can register with valid credentials', function () {
     $payload = [
         'name' => 'John Doe',
         'email' => 'john@doe.com',
-        'password' => 'password',
+        'password' => 'Password123!',
     ];
 
     $response = $this->postJson('/api/register', $payload);
@@ -26,11 +26,8 @@ test('user can register with valid credentials', function () {
         ])
         ->assertJsonPath('data.name', 'John Doe')
         ->assertJsonPath('data.email', 'john@doe.com');
-
-    $this->assertDatabaseHas('users', [
-        'name' => 'John Doe',
-        'email' => 'john@doe.com',
-    ]);
+    $user = User::where('email', 'john@doe.com')->first();
+    $this->assertModelExists($user);
 });
 
 test('registration fails with validation errors', function () {
@@ -50,7 +47,7 @@ test('registration fails with duplicate email', function () {
     $response = $this->postJson('/api/register', [
         'name' => 'John Doe',
         'email' => 'john@doe.com',
-        'password' => 'password',
+        'password' => 'Password123!',
     ]);
 
     $response->assertStatus(422)
