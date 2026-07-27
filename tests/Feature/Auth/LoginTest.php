@@ -8,7 +8,6 @@ uses(LazilyRefreshDatabase::class);
 test('user can login with valid credentials', function () {
     $user = User::factory()->create([
         'email' => 'john@doe.com',
-        'password' => bcrypt('password'),
     ]);
 
     $response = $this->postJson('/api/login', [
@@ -28,7 +27,6 @@ test('user can login with valid credentials', function () {
 test('login fails with invalid credentials', function () {
     User::factory()->create([
         'email' => 'john@doe.com',
-        'password' => bcrypt('password'),
     ]);
 
     $response = $this->postJson('/api/login', [
