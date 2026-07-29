@@ -10,8 +10,10 @@ Route::post('/register', RegisterController::class)->middleware('throttle:regist
 
 Route::post('/login', LoginController::class)->middleware('throttle:login');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum', 'throttle:api')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 
-Route::post('/todos', [TodoController::class, 'store'])->middleware(['auth:sanctum', 'throttle:api']);
+    Route::post('/todos', [TodoController::class, 'store']);
+});
