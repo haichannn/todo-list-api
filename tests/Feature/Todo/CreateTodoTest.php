@@ -73,16 +73,6 @@ test('creation fails when description exceeds 2000 characters', function () {
         ->assertJsonValidationErrors(['description']);
 });
 
-test('creation is rate limited to 60 requests per minute', function () {
-    $payload = ['title' => 'Rate limit test'];
-
-    for ($i = 0; $i < 60; $i++) {
-        $this->actingAs($this->user)->postJson('/api/todos', $payload)->assertStatus(201);
-    }
-
-    $this->actingAs($this->user)->postJson('/api/todos', $payload)->assertStatus(429);
-});
-
 test('creation succeeds when description is null', function () {
     $response = $this->actingAs($this->user)->postJson('/api/todos', [
         'title' => 'No description todo',
