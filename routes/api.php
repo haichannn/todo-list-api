@@ -15,5 +15,6 @@ Route::middleware('auth:sanctum', 'throttle:api')->group(function () {
         return $request->user();
     });
 
+    Route::get('/todos', [TodoController::class, 'index']);
     Route::post('/todos', [TodoController::class, 'store']);
 });
