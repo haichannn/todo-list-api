@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTodoRequest;
+use App\Http\Requests\UpdateTodoRequest;
 use App\Http\Resources\TodoCollection;
 use App\Http\Resources\TodoResource;
+use App\Models\Todo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -39,5 +41,15 @@ class TodoController extends Controller
         return (new TodoResource($todo))
             ->response()
             ->setStatusCode(201);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateTodoRequest $request, Todo $todo): TodoResource
+    {
+        $todo->update($request->validated());
+
+        return new TodoResource($todo);
     }
 }
