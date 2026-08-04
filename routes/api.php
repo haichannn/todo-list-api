@@ -17,4 +17,8 @@ Route::middleware('auth:sanctum', 'throttle:api')->group(function () {
 
     Route::get('/todos', [TodoController::class, 'index']);
     Route::post('/todos', [TodoController::class, 'store']);
+    Route::patch('/todos/{todo}', [TodoController::class, 'update'])
+        ->missing(function () {
+            return response()->json(['message' => 'Todo not found.'], 404);
+        });
 });
