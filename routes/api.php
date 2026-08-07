@@ -21,4 +21,9 @@ Route::middleware('auth:sanctum', 'throttle:api')->group(function () {
         ->missing(function () {
             return response()->json(['message' => 'Todo not found.'], 404);
         });
+    Route::delete('/todos/{todo}', [TodoController::class, 'destroy'])
+        ->name('todos.destroy')
+        ->missing(function () {
+            return response()->json(['message' => 'Todo not found.'], 404);
+        });
 });

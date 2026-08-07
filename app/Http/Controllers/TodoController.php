@@ -7,11 +7,15 @@ use App\Http\Requests\UpdateTodoRequest;
 use App\Http\Resources\TodoCollection;
 use App\Http\Resources\TodoResource;
 use App\Models\Todo;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TodoController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the authenticated user's todos.
      */
@@ -51,5 +55,17 @@ class TodoController extends Controller
         $todo->update($request->validated());
 
         return new TodoResource($todo);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Todo $todo): Response
+    {
+        $this->authorize('delete', $todo);
+
+        $todo->delete();
+
+        return response()->noContent();
     }
 }
