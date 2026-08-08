@@ -5,7 +5,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -38,6 +40,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'message' => "The requested {$modelName} was not found.",
                 ], 404);
+            }
+        });
+
+        // Rate limiting exception handling
+        $exceptions->render(function (ThrottleRequestsException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Too many requests. Please try again later.',
+                    'retry_after' => $e->getHeaders()['Retry-After'] ?? null,
+                ], Response::HTTP_TOO_MANY_REQUESTS);
             }
         });
     })->create();
