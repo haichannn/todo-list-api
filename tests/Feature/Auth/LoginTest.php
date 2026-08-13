@@ -54,6 +54,6 @@ test('authenticated user can access protected routes with token', function () {
     $response = $this->actingAs($user)->getJson('/api/user');
 
     $response->assertStatus(200)
-        ->assertJsonPath('id', $user->id)
-        ->assertJsonPath('email', $user->email);
+        ->assertJsonPath('data.id', $user->id)
+        ->assertJsonPath('data.email', $user->email);
 });
