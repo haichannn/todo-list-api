@@ -1,58 +1,212 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ✅ To-Do List API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A lightweight, secure REST API for personal task management. Built with Laravel 13 and Laravel Sanctum, this API provides user authentication and full CRUD operations for to-do items with search, pagination, and per-user data isolation.
 
-## About Laravel
+This project is based on the [Todo List API](https://roadmap.sh/projects/todo-list-api) challenge from [roadmap.sh](https://roadmap.sh).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🎯 Project Goals
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **User Authentication** — Registration and token-based authentication via Laravel Sanctum.
+- **To-Do Lifecycle** — Full Create, Read, Update, and Delete operations for personal tasks.
+- **Data Ownership** — Users can only access and modify their own to-do items, enforced by authorization policies.
+- **Input Validation** — Strict validation rules on every mutating request to ensure data integrity.
+- **Performance** — Paginated and searchable listing endpoints with database indexing.
+- **Security** — Rate limiting on all public and authenticated routes.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ⭐ Key Features
 
-## Learning Laravel
+- Token-based authentication (Bearer tokens)
+- Create, list, update, and delete to-do items
+- Search todos by title or description
+- Configurable pagination (up to 100 items per page)
+- Owner-only access control on update and delete
+- Rate limiting per route group
+- Auto-generated interactive API documentation via [Scramble](https://scramble.dedoc.co/)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Tech Stack
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Component          | Specification                        |
+| :----------------- | :----------------------------------- |
+| **Language**        | PHP 8.4                              |
+| **Framework**       | Laravel 13                           |
+| **Authentication**  | Laravel Sanctum v4 (Bearer Tokens)   |
+| **Database**        | SQLite                               |
+| **ORM**             | Eloquent                             |
+| **API Docs**        | Scramble (OpenAPI / Swagger)          |
+| **Testing**         | Pest PHP v4                          |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 📋 Prerequisites
 
-## Agentic Development
+Before you begin, make sure you have the following installed:
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **PHP** >= 8.4
+- **Composer** >= 2.x
+- **Node.js** >= 18.x and **npm**
+- **SQLite** (usually bundled with PHP)
+
+## 🚀 Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd todo-list-api
+   ```
+
+2. **Run the setup script**
+
+   The project includes a single setup command that installs all dependencies, generates the app key, runs migrations, and builds frontend assets:
+
+   ```bash
+   composer setup
+   ```
+
+3. **Start the development server**
+
+   ```bash
+   composer run dev
+   ```
+
+   This starts the application server at `http://localhost:8000`.
+
+## 🔐 Authentication Flow
+
+This API uses **Bearer Token** authentication powered by Laravel Sanctum. Here is the typical flow for a frontend client:
+
+### 1. Register a New User
+
+Send a `POST` request to `/api/register` with the user's name, email, and password.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+curl -X POST http://localhost:8000/api/register \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com", "password": "Secret1234"}'
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+A successful response returns `201 Created` with the user data.
 
-## Contributing
+### 2. Login
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Send a `POST` request to `/api/login` with email and password to receive a Bearer token.
 
-## Code of Conduct
+```bash
+curl -X POST http://localhost:8000/api/login \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "john@example.com", "password": "Secret1234"}'
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Response:
 
-## Security Vulnerabilities
+```json
+{
+  "token": "1|your_bearer_token_here"
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Use the Token
 
-## License
+Include the token in the `Authorization` header for all subsequent requests:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```
+Authorization: Bearer 1|your_bearer_token_here
+```
+
+### Required Headers
+
+All API requests must include:
+
+| Header           | Value                            | Required |
+| :--------------- | :------------------------------- | :------- |
+| `Accept`         | `application/json`               | Always   |
+| `Content-Type`   | `application/json`               | For requests with a body |
+| `Authorization`  | `Bearer <token>`                 | For protected endpoints  |
+
+## 📖 API Documentation
+
+This project uses **Scramble** to auto-generate interactive API documentation from the source code.
+
+When running the application locally, visit:
+
+```
+http://localhost:8000/docs/api
+```
+
+The documentation includes all endpoints, request/response schemas, validation rules, and authentication requirements. You can also try out API calls directly from the browser.
+
+> **Note:** The API documentation is only available in the `local` environment.
+
+## 📡 API Summary
+
+| Method   | Endpoint              | Auth     | Description                              |
+| :------- | :-------------------- | :------- | :--------------------------------------- |
+| `POST`   | `/api/register`       | No       | Create a new user account                |
+| `POST`   | `/api/login`          | No       | Authenticate and receive a Bearer token  |
+| `GET`    | `/api/user`           | Yes      | Get the authenticated user's details     |
+| `GET`    | `/api/todos`          | Yes      | List todos (paginated, searchable)       |
+| `POST`   | `/api/todos`          | Yes      | Create a new todo                        |
+| `PATCH`  | `/api/todos/{todo}`   | Yes      | Update a todo (owner only)               |
+| `DELETE` | `/api/todos/{todo}`   | Yes      | Delete a todo (owner only)               |
+
+### Query Parameters for `GET /api/todos`
+
+| Parameter   | Type     | Default | Description                                   |
+| :---------- | :------- | :------ | :-------------------------------------------- |
+| `search`    | `string` | —       | Filter todos by title or description keyword  |
+| `per_page`  | `int`    | `10`    | Number of items per page (max: 100)           |
+| `page`      | `int`    | `1`     | Page number                                   |
+
+## ⚠️ Error Response Format
+
+All API error responses follow a consistent JSON structure:
+
+### Validation Error (`422`)
+
+Returned when request data fails validation rules.
+
+```json
+{
+  "message": "The title field is required.",
+  "errors": {
+    "title": ["The title field is required."]
+  }
+}
+```
+
+### Status Code Reference
+
+| Code  | Meaning                 | When                                              |
+| :---- | :---------------------- | :------------------------------------------------ |
+| `200` | OK                      | Request succeeded with data                       |
+| `201` | Created                 | Resource successfully created                     |
+| `204` | No Content              | Resource successfully deleted (empty body)         |
+| `401` | Unauthorized            | Missing or invalid Bearer token                   |
+| `403` | Forbidden               | Action on a resource you do not own                |
+| `404` | Not Found               | Requested resource does not exist                  |
+| `422` | Unprocessable Entity    | Validation failed                                  |
+| `429` | Too Many Requests       | Rate limit exceeded                                |
+
+### Error Message Examples
+
+| Code  | Example `message`                                        |
+| :---- | :------------------------------------------------------- |
+| `401` | `"Unauthenticated."`                                     |
+| `401` | `"The provided credentials are incorrect."`              |
+| `403` | `"You do not have permission to access this resource."`  |
+| `404` | `"The requested todo was not found."`                    |
+| `429` | `"Too many requests. Please try again later."`           |
+
+> **Tip:** For `429` responses, check the `retry_after` field in the response body to know when you can retry.
+
+## 🚦 Rate Limiting
+
+The API enforces rate limits to protect against abuse:
+
+| Route Group       | Limit                  | Scoped By         |
+| :---------------- | :--------------------- | :----------------- |
+| **Register**      | 10 requests / minute   | IP address         |
+| **Login**         | 5 requests / minute    | IP address + email |
+| **API** (general) | 60 requests / minute   | User ID or IP      |
+
+When a rate limit is exceeded, the API returns a `429 Too Many Requests` response.
