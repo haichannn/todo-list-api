@@ -23,7 +23,8 @@ test('user cannot delete another user\'s todo', function () {
 
     $response = $this->actingAs($anotherUser)->deleteJson(route('todos.destroy', $this->todo));
 
-    $response->assertForbidden();
+    $response->assertForbidden()
+        ->assertJson(fn ($json) => $json->has('message'));
     $this->assertModelExists($this->todo);
 });
 

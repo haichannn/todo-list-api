@@ -30,7 +30,8 @@ test('a non-owner cannot update a todo', function () {
 
     $response = $this->actingAs($anotherUser)->patchJson("/api/todos/{$this->todo->id}", $payload);
 
-    $response->assertForbidden();
+    $response->assertForbidden()
+        ->assertJson(fn ($json) => $json->has('message'));
 });
 
 test('unauthenticated user cannot update a todo', function () {
